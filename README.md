@@ -33,7 +33,7 @@ On Android:
 Usage
 ---------
 
-	```as3
+	```
 	var _flash:FlashLight = new FlashLight;
 
 	_flash.turnLightOn = true; // (true,false)
