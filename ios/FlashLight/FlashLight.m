@@ -8,34 +8,46 @@
 
 #import "FlashRuntimeExtensions.h"
 #import "FlashLight.h"
+#import <UIKit/UIKit.h>
 
 @implementation FlashLight
 
 @end
 
+AVCaptureDevice *device;
+double brightness = 1.0;
+bool iOS6 = FALSE;
+
+void turnLight(BOOL on) {
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        if (on) {
+            if(iOS6)
+                [device setTorchModeOnWithLevel:brightness error:nil];
+            else
+                [device setTorchMode:AVCaptureTorchModeOn];
+            
+            [device setFlashMode:AVCaptureFlashModeOn];
+            //torchIsOn = YES; //define as a variable/property if you need to know status
+        } else {
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device setFlashMode:AVCaptureFlashModeOff];
+            //torchIsOn = NO;
+        }
+        [device unlockForConfiguration];
+    }
+}
+
 FREObject turnLightOn(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
     uint32_t on;
     FREGetObjectAsBool(argv[0], &on);
-    
-    // check if flashlight available
-    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
-    if (captureDeviceClass != nil) {
-        AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        if ([device hasTorch] && [device hasFlash]){
-            
-            [device lockForConfiguration:nil];
-            if (on) {
-                [device setTorchMode:AVCaptureTorchModeOn];
-                [device setFlashMode:AVCaptureFlashModeOn];
-                //torchIsOn = YES; //define as a variable/property if you need to know status
-            } else {
-                [device setTorchMode:AVCaptureTorchModeOff];
-                [device setFlashMode:AVCaptureFlashModeOff];
-                //torchIsOn = NO;
-            }
-            [device unlockForConfiguration];
-        }
-    }
+    turnLight(on);
+    return nil;
+}
+
+FREObject setBrightness(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
+    FREGetObjectAsDouble(argv[0], &brightness);
+    turnLight(YES);
     
     return nil;
 }
@@ -58,7 +70,7 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
 	
     NSLog(@"Entering FlashLightContextInitializer()");
     
-    int count = 2;
+    int count = 3;
 	*numFunctionsToTest = count;
 	FRENamedFunction* func = (FRENamedFunction*)malloc(sizeof(FRENamedFunction) * count);
     
@@ -69,8 +81,23 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
     func[1].name = (const uint8_t*)"turnLightOn";
 	func[1].functionData = NULL;
 	func[1].function = &turnLightOn;
-    
+
+    func[2].name = (const uint8_t*)"setBrightness";
+	func[2].functionData = NULL;
+	func[2].function = &setBrightness;
+
 	*functionsToSet = func;
+    
+    // check if flashlight available
+    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
+    if (captureDeviceClass != nil) {
+        device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+
+    NSString *reqSysVer = @"6.0";
+    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+    if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending)
+        iOS6 = TRUE;
     
     NSLog(@"Exiting FlashLightContextInitializer()");
 }

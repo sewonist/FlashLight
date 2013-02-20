@@ -22,9 +22,12 @@
         </platform>
         
         <platform name="Android-ARM"> 
-            <applicationDeployment/> 
+            <applicationDeployment> 
+                <nativeLibrary>libFlashLight.jar</nativeLibrary> 
+                <initializer>com.itpointlab.ane.flashlight.FlashLightExtension</initializer> 
+                <finalizer>com.itpointlab.ane.flashlight.FlashLightExtension</finalizer> 
+            </applicationDeployment>
         </platform>
-        
         
         <platform name="default"> 
             <applicationDeployment/> 
