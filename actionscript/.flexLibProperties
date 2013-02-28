@@ -2,6 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="com.itpointlab.ane.FlashLight"/>
+    <classEntry path="com.itpointlab.ane.CustomObject"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

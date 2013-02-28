@@ -1,9 +1,12 @@
 package com.itpointlab.ane
 {
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.StatusEvent;
 	import flash.external.ExtensionContext;
 	import flash.system.Capabilities;
 
-	public class FlashLight
+	public class FlashLight extends EventDispatcher
 	{
 		private static const EXTENSION_ID : String = "com.itpointlab.ane.FlashLight";
 		private var _isSupported:Boolean;
@@ -19,7 +22,7 @@ package com.itpointlab.ane
 				
 			try{
 				_context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
-				
+				_context.addEventListener(StatusEvent.STATUS, onStatusContext);
 				try{
 					_isSupported = _context.call("isSupported");
 				}catch(e:Error){
@@ -30,6 +33,11 @@ package com.itpointlab.ane
 				_isSupported = false;
 				trace(e.message, e.errorID);
 			}
+		}
+		
+		protected function onStatusContext(event:StatusEvent):void
+		{
+			dispatchEvent(new Event(event.level));
 		}
 		
 		public function get isSupported():Boolean{
@@ -59,6 +67,31 @@ package com.itpointlab.ane
 			} else {
 				trace('Android is not supported brightness.');
 			}
+		}
+		
+		public function getBoolean():Boolean
+		{
+			return _context.call("getBoolean") as Boolean;
+		}
+		
+		public function getInt():int
+		{
+			return _context.call("getInt") as int;
+		}
+		
+		public function getString():String
+		{
+			return _context.call("getString") as String;
+		}
+		
+		public function getArray():Array
+		{
+			return _context.call("getArray") as Array;
+		}
+		
+		public function getCustomObject():CustomObject
+		{
+			return _context.call("getCustomObject") as CustomObject;
 		}
 		
 	}
