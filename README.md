@@ -33,10 +33,8 @@ On Android:
 Usage
 ---------
 
-	```
-	var _flash:FlashLight = new FlashLight;
-
-	_flash.turnLightOn = true; // (true,false)
-
-	_flash.brigthness = 1; // (0-1) iOS6 only
-	```
+```as
+var _flash:FlashLight = new FlashLight;
+_flash.turnLightOn = true; // (true,false)
+_flash.brigthness = 1; // (0-1) iOS6 only
+```
