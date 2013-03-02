@@ -18,6 +18,9 @@ AVCaptureDevice *device;
 double brightness = 1.0;
 bool iOS6 = FALSE;
 
+
+char * ON = "on";
+char * OFF = "off";
 char * CODE = "code";
 char * EVENT_CHANGE = "change";
 
@@ -32,14 +35,18 @@ void turnLight(BOOL on, FREContext ctx) {
             
             [device setFlashMode:AVCaptureFlashModeOn];
             //torchIsOn = YES; //define as a variable/property if you need to know status
+            
+            FREDispatchStatusEventAsync( ctx, (uint8_t*)ON, (uint8_t*)EVENT_CHANGE );
         } else {
             [device setTorchMode:AVCaptureTorchModeOff];
             [device setFlashMode:AVCaptureFlashModeOff];
             //torchIsOn = NO;
+            
+            FREDispatchStatusEventAsync( ctx, (uint8_t*)OFF, (uint8_t*)EVENT_CHANGE );
         }
         [device unlockForConfiguration];
         
-        FREDispatchStatusEventAsync( ctx, (uint8_t*)CODE, (uint8_t*)EVENT_CHANGE );
+        
     }
 }
 
@@ -47,6 +54,7 @@ FREObject turnLightOn(FREContext ctx, void* funcData, uint32_t argc, FREObject a
     uint32_t on;
     FREGetObjectAsBool(argv[0], &on);
     turnLight(on, ctx);
+    
     return nil;
 }
 
@@ -120,6 +128,10 @@ FREObject getArray(FREContext ctx, void* funcData, uint32_t argc, FREObject argv
 FREObject getCustomObject(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
     FREObject CustomObject[2];
     
+    //
+    // var CustomObject = new Vector.<FREObject>(2);
+    //
+    
     char * name = "jhon.doe";
     FRENewObjectFromUTF8(strlen(name), (const uint8_t*)name, &CustomObject[0]);
     FRENewObjectFromInt32(1234567, &CustomObject[1]);
@@ -130,7 +142,24 @@ FREObject getCustomObject(FREContext ctx, void* funcData, uint32_t argc, FREObje
     return retVal;
 }
 
-
+FREObject nativeSum(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
+    // get from AIR
+    uint32_t nameLength;
+    const uint8_t *name;
+    int32_t uid;
+    
+    FREGetObjectAsUTF8(argv[0], &nameLength, &name);
+    FREGetObjectAsInt32(argv[1], &uid);
+    
+    // send to AIR
+    NSString * sum = [NSString stringWithFormat:@"[SUM] name : %s , uid : %i", name, uid];
+    char * result = (char*)[ sum UTF8String ];
+    
+    FREObject retVal;
+    FRENewObjectFromUTF8(strlen(result), (const uint8_t*)result, &retVal);
+    
+    return retVal;
+}
 
 
 
@@ -144,7 +173,7 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
 	
     NSLog(@"Entering FlashLightContextInitializer()");
     
-    int count = 8;
+    int count = 9;
 	*numFunctionsToTest = count;
 	FRENamedFunction* func = (FRENamedFunction*)malloc(sizeof(FRENamedFunction) * count);
     
@@ -179,6 +208,11 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
     func[7].name = (const uint8_t*)"getCustomObject";
 	func[7].functionData = NULL;
 	func[7].function = &getCustomObject;
+    
+    func[8].name = (const uint8_t*)"nativeSum";
+	func[8].functionData = NULL;
+	func[8].function = &nativeSum;
+    
     
     
 	*functionsToSet = func;

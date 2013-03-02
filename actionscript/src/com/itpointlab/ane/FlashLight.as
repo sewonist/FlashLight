@@ -15,6 +15,7 @@ package com.itpointlab.ane
 		private var _brigthness:Number = 1;
 		private var _turnOn:Boolean = false;
 		private var _iOS:Boolean = false;
+		private var _isOn:Boolean = false;
 		
 		public function FlashLight()
 		{
@@ -31,13 +32,18 @@ package com.itpointlab.ane
 				
 			}catch(e:Error){
 				_isSupported = false;
-				trace(e.message, e.errorID);
 			}
 		}
 		
 		protected function onStatusContext(event:StatusEvent):void
 		{
-			dispatchEvent(new Event(event.level));
+			if(event.code == 'on'){
+				_isOn = true;
+				dispatchEvent(new Event(Event.ACTIVATE));
+			} else if (event.code == 'off' ) {
+				_isOn = false;
+				dispatchEvent(new Event(Event.DEACTIVATE));
+			}
 		}
 		
 		public function get isSupported():Boolean{
@@ -51,6 +57,7 @@ package com.itpointlab.ane
 
 		public function set turnOn(value:Boolean):void
 		{
+			if(_isOn == value || _isSupported==false) return;
 			_turnOn = value;
 			_context.call("turnLightOn", _turnOn);
 		}
@@ -62,7 +69,8 @@ package com.itpointlab.ane
 		
 		public function set brigthness(value:Number):void
 		{
-			if(_iOS){
+			if(_isOn == value || _isSupported==false) return;
+			if(_iOS){				
 				_context.call("setBrightness", value);
 			} else {
 				trace('Android is not supported brightness.');
@@ -93,6 +101,15 @@ package com.itpointlab.ane
 		{
 			return _context.call("getCustomObject") as CustomObject;
 		}
+		
+		public function nativeSum(name:String, id:Number):String
+		{
+			return _context.call("nativeSum", name, id) as String;
+		}
+		
+		
+		
+		
 		
 	}
 }
