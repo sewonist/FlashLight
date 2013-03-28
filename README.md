@@ -1,3 +1,11 @@
+Under Construction
+==================
+
+The master branch of FlashLight is under construction. You can download old version below link. Thanks.
+
+https://github.com/sewonist/FlashLight/tree/it.3
+
+
 FlashLight
 ==========
 
@@ -38,3 +46,6 @@ var _flash:FlashLight = new FlashLight;
 _flash.turnLightOn = true; // (true,false)
 _flash.brigthness = 1; // (0-1) iOS6 only
 ```
+
+by it.3
+
