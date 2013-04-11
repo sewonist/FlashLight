@@ -34,8 +34,8 @@
 		11C44B5516CBD1550026BACA /* FlashLight-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FlashLight-Prefix.pch"; sourceTree = "<group>"; };
 		11C44B5616CBD1550026BACA /* FlashLight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlashLight.h; sourceTree = "<group>"; };
 		11C44B5816CBD1560026BACA /* FlashLight.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlashLight.m; sourceTree = "<group>"; };
-		11C44B6216CBD2000026BACA /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = "/Applications/Adobe Flash Builder 4.6/sdks/4.6.0/include/FlashRuntimeExtensions.h"; sourceTree = "<absolute>"; };
 		11C44B6616CBD6460026BACA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		11FFEF5F170D9F0500323C76 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashRuntimeExtensions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +55,6 @@
 		11C44B4316CBD1550026BACA = {
 			isa = PBXGroup;
 			children = (
-				11C44B6216CBD2000026BACA /* FlashRuntimeExtensions.h */,
 				11C44B5316CBD1550026BACA /* FlashLight */,
 				11C44B5016CBD1550026BACA /* Frameworks */,
 				11C44B4F16CBD1550026BACA /* Products */,
@@ -84,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				11C44B5616CBD1550026BACA /* FlashLight.h */,
+				11FFEF5F170D9F0500323C76 /* FlashRuntimeExtensions.h */,
 				11C44B5816CBD1560026BACA /* FlashLight.m */,
 				11C44B5416CBD1550026BACA /* Supporting Files */,
 			);
