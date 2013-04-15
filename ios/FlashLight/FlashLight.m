@@ -39,12 +39,42 @@ void turnLight(BOOL on, FREContext ctx) {
 }
 
 #pragma mark - ANE Function
-FREObject turnLightOn(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
-    uint32_t on;
-    FREGetObjectAsBool(argv[0], &on);
-    turnLight(on, ctx);
+FREObject flashLightOn(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        [device setTorchMode:AVCaptureTorchModeOn];
+        [device setFlashMode:AVCaptureFlashModeOn];
+        FREDispatchStatusEventAsync( ctx, (uint8_t*)ON, (uint8_t*)EVENT_CHANGE );
+        [device unlockForConfiguration];
+    }
     
     return nil;
+}
+
+FREObject flashLightOff(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        [device setTorchMode:AVCaptureTorchModeOff];
+        [device setFlashMode:AVCaptureTorchModeOff];
+        FREDispatchStatusEventAsync( ctx, (uint8_t*)ON, (uint8_t*)EVENT_CHANGE );
+        [device unlockForConfiguration];
+    }
+    
+    return nil;
+}
+
+FREObject flashLightMode(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
+    FREObject result = nil;
+    
+    if ([device hasTorch] && [device hasFlash]){
+        if( device.torchMode && device.flashMode ){
+            FRENewObjectFromBool(YES, &result);
+        }else{
+            FRENewObjectFromBool(NO, &result);
+        }
+    }
+    
+    return result;
 }
 
 FREObject flashLightIsSupported(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[] ){
@@ -61,9 +91,7 @@ FREObject flashLightIsSupported(FREContext ctx, void* funcData, uint32_t argc, F
 void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                                   uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) {
     
-    NSLog(@"Entering FlashLightContextInitializer()");
-    
-    int count = 2;
+    int count = 4;
 	*numFunctionsToTest = count;
 	FRENamedFunction* func = (FRENamedFunction*)malloc(sizeof(FRENamedFunction) * count);
     
@@ -71,9 +99,17 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
 	func[0].functionData = NULL;
 	func[0].function = &flashLightIsSupported;
     
-    func[1].name = (const uint8_t*)"turnLightOn";
+    func[1].name = (const uint8_t*)"flashLightOn";
 	func[1].functionData = NULL;
-	func[1].function = &turnLightOn;
+	func[1].function = &flashLightOn;
+    
+    func[2].name = (const uint8_t*)"flashLightOff";
+	func[2].functionData = NULL;
+	func[2].function = &flashLightOff;
+    
+    func[3].name = (const uint8_t*)"flashLightMode";
+	func[3].functionData = NULL;
+	func[3].function = &flashLightMode;
     
 	*functionsToSet = func;
     
@@ -81,37 +117,16 @@ void FlashLightContextInitializer(void* extData, const uint8_t* ctxType, FRECont
     if (captureDeviceClass != nil) {
         device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     }
-    
-    NSLog(@"Exiting FlashLightContextInitializer()");
 }
 void FlashLightContextFinalizer(FREContext ctx) {
-    
-    NSLog(@"Entering FlashLightContextFinalizer()");
-    
-    // Nothing to clean up.
-    
-    NSLog(@"Exiting FlashLightContextFinalizer()");
-    
-	return;
+    return;
 }
 void FlashLightExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet,
                               FREContextFinalizer* ctxFinalizerToSet) {
-    
-    NSLog(@"Entering FlashLightExtInitializer()");
-    
 	*extDataToSet = NULL;
 	*ctxInitializerToSet = &FlashLightContextInitializer;
 	*ctxFinalizerToSet = &FlashLightContextFinalizer;
-    
-    NSLog(@"Exiting FlashLightExtInitializer()");
 }
 void FlashLightExtFinalizer(void* extData) {
-    
-    NSLog(@"Entering FlashLightExtFinalizer()");
-    
-	// Nothing to clean up.
-    
-    NSLog(@"Exiting FlashLightExtFinalizer()");
-    
-	return;
+    return;
 }
