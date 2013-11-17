@@ -1,6 +1,5 @@
 # Xcode
 .DS_Store
-build/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -16,3 +15,12 @@ profile
 *.moved-aside
 DerivedData
 .idea/
+
+# Flash Builder
+.actionScriptProperties
+.flexProperties
+.project
+.settings/*
+bin-debug/*
+
+

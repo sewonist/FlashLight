@@ -20,14 +20,16 @@ public class FlashLightContext extends FREContext {
 	
 	public FlashLightContext()
 	{
-		FlashLightContext.camera = Camera.open();
-		FlashLightContext.parameters = FlashLightContext.camera.getParameters();
+		try {
+			FlashLightContext.camera = Camera.open();
+			FlashLightContext.parameters = FlashLightContext.camera.getParameters();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

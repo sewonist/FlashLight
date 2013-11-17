@@ -16,7 +16,11 @@ public class IsSupportedFunction implements FREFunction {
 		
 		try 
 		{
-			result = FREObject.newObject(true);
+			if(FlashLightContext.camera == null){
+				result = FREObject.newObject(false);
+			}else{
+				result = FREObject.newObject(true);
+			}
 		}
 		catch (FREWrongThreadException fwte)
 		{
