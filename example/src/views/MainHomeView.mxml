@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="ANE-FlashLight-Example" 
+		initialize="init()">
+	<fx:Script>
+		<![CDATA[
+			import com.itpointlab.ane.FlashLight;
+			
+			private var light:FlashLight;
+			
+			private function init():void {
+				light = FlashLight.getInstance();
+				light.addEventListener(Event.CHANGE, onChangeLight);
+			}
+			
+			protected function onChangeLight(event:Event):void
+			{
+				if(light.mode){
+					statusLabel.text = "Light is ON";
+					turnButton.label = "Turn OFF";
+				}else{
+					statusLabel.text = "Light is OFF";
+					turnButton.label = "Turn ON";
+				}
+			}
+			
+			private function onClickTurn():void
+			{
+				if(light.isSupported && light.mode){
+					light.off();
+				}else{
+					light.on();
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Label id="statusLabel" text="Light is OFF" x="20" y="50" />
+	<s:Button id="turnButton" label="Turn ON" x="130" y="30" click="onClickTurn();"/>
+</s:View>

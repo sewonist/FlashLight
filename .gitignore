@@ -20,7 +20,7 @@ DerivedData
 .actionScriptProperties
 .flexProperties
 .project
-.settings/*
-bin-debug/*
+.settings
+bin-debug
 
 
